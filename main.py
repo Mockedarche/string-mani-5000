@@ -18,13 +18,6 @@ filesreadin = []
 def quitapp():
     gui.destroy()
 
-#reads in files in places the data in a list variable name filesreadin.
-def readinfile(location):
-    if locationoffiles:
-        file = open(location, 'r', encoding='utf-8', errors='replace')
-        data = file.readlines()
-        filesreadin.append(data)
-
 def closefilereads():
     fLR.flush()
     fLR.close()
@@ -56,18 +49,7 @@ def writefile(data):
 
         f.flush()
         f.close()
-        '''
-        
-    f.write(text2save)
-    f.close()
-    '''
-    '''
-    if locationoffiles:
-        download_folder = os.path.expanduser("~") + "/Downloads/"
-        writetofile = open(download_folder + "output.txt", 'w+')
-        for i in data:
-            writetofile.write(i)
-    '''
+
 #updates the output field aka the location where selected file locations are shown.
 def updateoutput():
     output.insert(END, "COMPLETED TASK RESETTING")
@@ -106,36 +88,23 @@ def trimwindow():
 #trims either before the separator or after (keeps before or after). //updated for new LR write
 def trim(text, BorA):
     text = text.get()
-    trimedlist = []
-    line = ''
-
-    for i in locationoffiles:
-        readinfile(i)
 
     if BorA == "before":
-        for i in filesreadin:
-            for j in range(0, len(i)):
-                if str(text) in i[j]:
-                    line = i[j].split(text)[0] + text + "\n"
-                    writefileLR(line)
-                    #trimedlist.append(line)
-                    #trimedlist.append(i[j].split(text)[0] + "\n")
-                else:
-                    writefileLR(j)
-                    #trimedlist.append(j)
-    if BorA == "after":
-        for i in filesreadin:
-            for j in range(0, len(i)):
-                if str(text) in i[j]:
-                    line = text + i[j].split(text)[1] + "\n"
-                    writefileLR(line)
-                    #trimedlist.append(line)
-                    #trimedlist.append(i[j].split(text)[1] + "\n")
+        for i in locationoffiles:
+            fp = open(i, "r")
+            for j in fp:
+                j = j.split(text)[0]
+                writefileLR(j)
+            fp.close()
 
-                    #print(i[j].split(text)[1])
-                else:
-                    writefileLR(j)
-                    #trimedlist.append(j)
+    else:
+        for i in locationoffiles:
+            fp = open(i, "r")
+            for j in fp:
+                j = j.split(text, 1)[1]
+                writefileLR(j)
+            fp.close()
+
 
     closefilereads()
     #writefile(trimedlist)
@@ -176,14 +145,12 @@ def removeall(toremove):
     removallist = []
     # print("Here")
 
+
     for i in locationoffiles:
-        readinfile(i)
-
-    for i in filesreadin:
-        for j in i:
+        fp = open(i, "r")
+        for j in fp:
             writefileLR(j.replace(toremove, ""))
-            #removallist.append(j.replace(toremove, ""))
-
+        fp.close()
 
     closefilereads()
     #writefile(removallist)
@@ -191,17 +158,14 @@ def removeall(toremove):
 
 #removes only the first occurence of a character or string (left to right)
 def removefirstoc(toremove):
-    removellist = []
-    for i in locationoffiles:
-        readinfile(i)
 
-    for i in filesreadin:
-        for j in i:
+    for i in locationoffiles:
+        fp = open(i, "r")
+        for j in fp:
             writefileLR(j.replace(toremove, "", 1))
-            #removellist.append(j.replace(toremove, "", 1))
+        fp.close()
 
     closefilereads()
-    #writefile(removellist)
     updateoutput()
 
 #removes only the last occurence of a character or string (right to left)
@@ -209,27 +173,24 @@ def removelastoc(toremove):
     removallist = []
 
     for i in locationoffiles:
-        readinfile(i)
+        fp = open(i, "r")
+        for j in fp:
+            line = j[::-1].replace(toremove[::-1], "", 1)[::-1]
+            writefileLR(line)
+        fp.close()
 
-    for i in filesreadin:
-        for j in i:
-            string = j[::-1].replace(toremove[::-1], "", 1)[::-1]
-            writefileLR(string)
-            #removallist.append(string)
     closefilereads()
-    #writefile(removallist)
     updateoutput()
 
 #removes x number of instances of characters or strings (left to right)
 def removexfoc(toremove, num):
     removallist = []
-    for i in locationoffiles:
-        readinfile(i)
 
-    for i in filesreadin:
-        for j in i:
-            #removallist.append(j.replace(toremove, "", int(num)))
+    for i in locationoffiles:
+        fp = open(i, "r")
+        for j in fp:
             writefileLR(j.replace(toremove, "", int(num)))
+        fp.close()
 
     closefilereads()
     #writefile(removallist)
@@ -240,13 +201,11 @@ def removexloc(toremove, num):
     removallist = []
 
     for i in locationoffiles:
-        readinfile(i)
-
-    for i in filesreadin:
-        for j in i:
-            string = j[::-1].replace(toremove[::-1], "", int(num))[::-1]
-            writefileLR(string)
-            #removallist.append(string)
+        fp = open(i, "r")
+        for j in fp:
+            line = j[::-1].replace(toremove[::-1], "", int(num))[::-1]
+            writefileLR(line)
+        fp.close()
 
     closefilereads()
     #writefile(removallist)
@@ -280,12 +239,10 @@ def Uppercaseall():
     caseslist = []
 
     for i in locationoffiles:
-        readinfile(i)
-
-    for i in filesreadin:
-        for j in i:
+        fp = open(i, "r")
+        for j in fp:
             writefileLR(str(j).upper())
-            #caseslist.append(str(j).upper())
+        fp.close()
 
     closefilereads()
     #writefile(caseslist)
@@ -296,12 +253,10 @@ def Lowercaseall():
     caselist = []
 
     for i in locationoffiles:
-        readinfile(i)
-
-    for i in filesreadin:
-        for j in i:
-            #caselist.append(str(j).lower())
+        fp = open(i, "r")
+        for j in fp:
             writefileLR(str(j).lower())
+        fp.close()
 
     closefilereads()
     #writefile(caselist)
@@ -310,16 +265,15 @@ def Lowercaseall():
 #uppercases letters following a step such as 1 (aAaAaA)
 def Stepup(num):
     caselist = []
-    for i in locationoffiles:
-        readinfile(i)
 
-    for i in filesreadin:
-        for j in i:
+    for i in locationoffiles:
+        fp = open(i, "r")
+        for j in fp:
             a = list(j)
             a[2::int(num)] = [x.upper() for x in a[2::int(num)]]
             s = ''.join(a)
             writefileLR(s)
-            #caselist.append(s)
+        fp.close()
 
     closefilereads()
     #writefile(caselist)
@@ -328,16 +282,15 @@ def Stepup(num):
 #lowercases letters following a step such as 1(AaAaAa)
 def Steplow(num):
     caselist = []
-    for i in locationoffiles:
-        readinfile(i)
 
-    for i in filesreadin:
-        for j in i:
+    for i in locationoffiles:
+        fp = open(i, "r")
+        for j in fp:
             a = list(j)
             a[2::int(num)] = [x.lower() for x in a[2::int(num)]]
             s = ''.join(a)
             writefileLR(s)
-            #caselist.append(s)
+        fp.close()
 
     closefilereads()
     #writefile(caselist)
@@ -346,6 +299,7 @@ def Steplow(num):
 #uppercaes all instances of a certain letter such as 'a' (Ask the tAll mAn)
 def Onlyxup(letter):
     caselist = []
+
     if str(letter).islower():
         uppercaseletter = str(letter).upper()
     else:
@@ -353,11 +307,10 @@ def Onlyxup(letter):
         letter = str(letter).lower()
 
     for i in locationoffiles:
-        readinfile(i)
-    for i in filesreadin:
-        for j in i:
-            #caselist.append(j.replace(letter, uppercaseletter))
+        fp = open(i, "r")
+        for j in fp:
             writefileLR(j.replace(letter, uppercaseletter))
+        fp.close()
 
     closefilereads()
     #writefile(caselist)
@@ -366,6 +319,7 @@ def Onlyxup(letter):
 #lowercasses all instances of a certain letter such as 'a' (aSK THE TaLL MaN)
 def Onlyxlow(letter):
     caselist = []
+
     if str(letter).isupper():
         lowercaseletter = str(letter).lower()
     else:
@@ -373,11 +327,10 @@ def Onlyxlow(letter):
         letter = str(letter).upper()
 
     for i in locationoffiles:
-        readinfile(i)
-    for i in filesreadin:
-        for j in i:
-            #caselist.append(j.replace(letter, lowercaseletter))
+        fp = open(i, "r")
+        for j in fp:
             writefileLR(j.replace(letter, lowercaseletter))
+        fp.close()
 
     closefilereads()
     #writefile(caselist)
@@ -403,19 +356,18 @@ def insertgui():
            command=lambda: insertatX(textentryinsert.get(), textentryinsertnum.get())).grid(row=1, column=1, sticky=W)
     Button(guiinsert, text="insertstep", width=7,
            command=lambda: insertstep(textentryinsert.get(), textentryinsertnum.get())).grid(row=2, column=1, sticky=W)
-    Button(guiinsert, text="newline", width=7, command=lambda: insertnewline(textentryinsertnum.get())).grid(row=1,column=2,sticky=W)
 
 #inserts the character or string given in the front of each line (left to right)
 def insertfront(toinsert):
     insertlist = []
 
     for i in locationoffiles:
-        readinfile(i)
-
-    for i in filesreadin:
-        for j in i:
+        fp = open(i, "r")
+        for j in fp:
             writefileLR(toinsert + j)
-            #insertlist.append(toinsert + j)
+        fp.close()
+
+
     closefilereads()
     #writefile(insertlist)
     updateoutput()
@@ -425,13 +377,26 @@ def insertend(toinsert):
     insertlist = []
 
     for i in locationoffiles:
-        readinfile(i)
-
-    for i in filesreadin:
-        for j in i:
-            j = str(j).strip('\n')
-            #insertlist.append(j + toinsert + '\n')
+        fp = open(i, "r")
+        for j in fp:
+            j = j.strip('\n')
             writefileLR(j + toinsert + '\n')
+        fp.close()
+
+    closefilereads()
+    #writefile(insertlist)
+    updateoutput()
+
+#inserts a character or string at a certain index of a string. NOTE if the string length is shorter than the string nothing is inserted.
+def insertatX(toinsert, location):
+    insertlist = []
+
+
+    for i in locationoffiles:
+        fp = open(i, "r")
+        for j in fp:
+            writefileLR(j[0:int(location)] + toinsert +j[int(location):len(j)])
+        fp.close()
 
     closefilereads()
     #writefile(insertlist)
@@ -442,57 +407,10 @@ def insertstep(toinsert, step):
     insertlist = []
 
     for i in locationoffiles:
-        readinfile(i)
-
-    for i in filesreadin:
-        for j in i:
-            #insertlist.append(toinsert.join(j[i:i + int(step)] for i in range(0, len(j), int(step))))
+        fp = open(i, "r")
+        for j in fp:
             writefileLR(toinsert.join(j[i:i + int(step)] for i in range(0, len(j), int(step))))
-
-    closefilereads()
-    #writefile(insertlist)
-    updateoutput()
-
-#inserts a character or string at a certain index of a string. NOTE if the string length is shorter than the string nothing is inserted.
-def insertatX(toinsert, location):
-    insertlist = []
-
-    for i in locationoffiles:
-        readinfile(i)
-
-    for i in filesreadin:
-        for j in i:
-            if len(j) >= int(location):
-                j1 = j[0:int(location)]
-                j2 = j[int(location):len(j)]
-                newline = j1 + toinsert + j2
-                writefileLR(newline)
-                #insertlist.append(newline)
-
-            else:
-                writefileLR(j)
-                #insertlist.append(j)
-
-    closefilereads()
-    #writefile(insertlist)
-    updateoutput()
-
-#inserts a newline or multiple following a step
-def insertnewline(step):
-    insertlist = []
-    k = 0
-    for i in locationoffiles:
-        readinfile(i)
-
-    for i in filesreadin:
-        for j in i:
-            k = k + 1
-            writefileLR(j)
-            insertlist.append(j)
-            if k == int(step):
-                writefileLR("\n")
-                #insertlist.append("\n")
-                k = 0
+        fp.close()
 
     closefilereads()
     #writefile(insertlist)
@@ -513,71 +431,32 @@ def analyzegui():
 
 #lists the frequency of all characters in a file. (such as a = 8 meaning 8 lowercase letter a's are in the entire file)
 def frequency():
-    analyzelist = []
-    mylistlocation = []
-    mylistcount = []
-    sortedlist = []
+    curIndex = 0
+    charList = [ '!' ,'"' ,'#' ,'$' ,'%' ,'&' ,'\'' ,'(' ,')' ,'*' ,'+' ,',' ,'-' ,'.' ,'/' ,'0' ,'1' ,'2' ,'3' ,'4' ,'5' ,'6' ,'7' ,'8' ,'9' ,':' ,';' ,'<' ,'=' ,'>' ,'?' ,'@' ,'A' ,'B' ,'C' ,'D' ,'E' ,'F' ,'G' ,'H' ,'I' ,'J' ,'K' ,'L' ,'M' ,'N' ,'O' ,'P' ,'Q' ,'R' ,'S' ,'T' ,'U' ,'V' ,'W' ,'X' ,'Y' ,'Z' ,'[' ,'\\' ,']' ,'^' ,'_' ,'`' ,'a' ,'b' ,'c' ,'d' ,'e' ,'f' ,'g' ,'h' ,'i' ,'j' ,'k' ,'l' ,'m' ,'n' ,'o' ,'p' ,'q' ,'r' ,'s' ,'t' ,'u' ,'v' ,'w' ,'x' ,'y' ,'z' ,'{' ,'|' ,'}' ,'~', '\n' ]
+    charNumList = [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ]
+
 
     for i in locationoffiles:
-        readinfile(i)
-
-    for i in filesreadin:
-        for j in i:
+        fp = open(i, mode='r', encoding='utf8', errors='replace')
+        for j in fp:
             for k in j:
-                if k not in mylistlocation:
-                    mylistlocation.append(k)
-                    mylistcount.append(1)
-                    #print(k)
-                else:
-                    mylistcount[mylistlocation.index(k)] = mylistcount[mylistlocation.index(k)] + 1
-
-    for i in mylistlocation:
-        if str(i).isspace():
-            sortedlist.append("Space")
-        elif str(i) == '\n':
-            sortedlist.append("Newline")
-        elif str(i) == '\t':
-            sortedlist.append("Tab")
-        elif str(i) == '\v':
-            sortedlist.append("Vertical tab")
-        elif str(i) == '\f':
-            sortedlist.append("Form feed")
-        elif str(i) == '\r':
-            sortedlist.append("Carriage return")
-        else:
-            sortedlist.append(i)
-
-    sortedlist.sort()
-
-    for i in range(0, int(len(mylistcount))):
-        #print(str(sortedlist[i]) + " = " + str(mylistcount[mylistlocation.index(sortedlist[i])]))
-        try:
-            analyzelist.append(str(sortedlist[i]) + " = " + str(mylistcount[mylistlocation.index(sortedlist[i])]) + "\n")
-        except ValueError:
-            if sortedlist[i] == "Space":
                 try:
-                    analyzelist.append(str(sortedlist[i]) + " = " + str(mylistcount[mylistlocation.index(' ')]) + "\n")
-                except:
-                    return
-            elif sortedlist[i] == "Newline":
-                analyzelist.append(str(sortedlist[i]) + " = " + str(mylistcount[mylistlocation.index('\n')]) + "\n")
-            elif sortedlist[i] == "Tab":
-                analyzelist.append(str(sortedlist[i]) + " = " + str(mylistcount[mylistlocation.index('\t')]) + "\n")
-            elif sortedlist[i] == "Vertical tab":
-                analyzelist.append(str(sortedlist[i]) + " = " + str(mylistcount[mylistlocation.index('\v')]) + "\n")
-            elif sortedlist[i] == "Form feed":
-                analyzelist.append(str(sortedlist[i]) + " = " + str(mylistcount[mylistlocation.index('\r')]) + "\n")
-            elif sortedlist[i] == "Carriage return":
-                analyzelist.append(str(sortedlist[i]) + " = " + str(mylistcount[mylistlocation.index('\r')]) + "\n")
-            else:
-                return
+                    curIndex = charList.index(k)
+                    charNumList[curIndex] += 1
+                except ValueError:
+                    charList.append(k)
+                    charNumList.append(0)
+
+        fp.close()
 
 
-    writefile(analyzelist)
+    for i in range(len(charList) - 1):
+        writefileLR(charList[i] + " = " + str(charNumList[i]))
+
+
+
+    closefilereads()
     updateoutput()
-
-#def tester():
-
 
 #the help button triggers the systems text editor to open the help.txt which contains the manual
 def help(): #needs windows (operating system) support
