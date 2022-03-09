@@ -91,7 +91,7 @@ def trim(text, BorA):
 
     if BorA == "before":
         for i in locationoffiles:
-            fp = open(i, "r")
+            fp = open(i, mode='r', encoding='utf8', errors='replace')
             for j in fp:
                 j = j.split(text)[0]
                 writefileLR(j)
@@ -99,7 +99,7 @@ def trim(text, BorA):
 
     else:
         for i in locationoffiles:
-            fp = open(i, "r")
+            fp = open(i, mode='r', encoding='utf8', errors='replace')
             for j in fp:
                 j = j.split(text, 1)[1]
                 writefileLR(j)
@@ -147,7 +147,7 @@ def removeall(toremove):
 
 
     for i in locationoffiles:
-        fp = open(i, "r")
+        fp = open(i, mode='r', encoding='utf8', errors='replace')
         for j in fp:
             writefileLR(j.replace(toremove, ""))
         fp.close()
@@ -160,7 +160,7 @@ def removeall(toremove):
 def removefirstoc(toremove):
 
     for i in locationoffiles:
-        fp = open(i, "r")
+        fp = open(i, mode='r', encoding='utf8', errors='replace')
         for j in fp:
             writefileLR(j.replace(toremove, "", 1))
         fp.close()
@@ -173,7 +173,7 @@ def removelastoc(toremove):
     removallist = []
 
     for i in locationoffiles:
-        fp = open(i, "r")
+        fp = open(i, mode='r', encoding='utf8', errors='replace')
         for j in fp:
             line = j[::-1].replace(toremove[::-1], "", 1)[::-1]
             writefileLR(line)
@@ -187,7 +187,7 @@ def removexfoc(toremove, num):
     removallist = []
 
     for i in locationoffiles:
-        fp = open(i, "r")
+        fp = open(i, mode='r', encoding='utf8', errors='replace')
         for j in fp:
             writefileLR(j.replace(toremove, "", int(num)))
         fp.close()
@@ -201,7 +201,7 @@ def removexloc(toremove, num):
     removallist = []
 
     for i in locationoffiles:
-        fp = open(i, "r")
+        fp = open(i, mode='r', encoding='utf8', errors='replace')
         for j in fp:
             line = j[::-1].replace(toremove[::-1], "", int(num))[::-1]
             writefileLR(line)
@@ -239,7 +239,7 @@ def Uppercaseall():
     caseslist = []
 
     for i in locationoffiles:
-        fp = open(i, "r")
+        fp = open(i, mode='r', encoding='utf8', errors='replace')
         for j in fp:
             writefileLR(str(j).upper())
         fp.close()
@@ -253,7 +253,7 @@ def Lowercaseall():
     caselist = []
 
     for i in locationoffiles:
-        fp = open(i, "r")
+        fp = open(i, mode='r', encoding='utf8', errors='replace')
         for j in fp:
             writefileLR(str(j).lower())
         fp.close()
@@ -267,7 +267,7 @@ def Stepup(num):
     caselist = []
 
     for i in locationoffiles:
-        fp = open(i, "r")
+        fp = open(i, mode='r', encoding='utf8', errors='replace')
         for j in fp:
             a = list(j)
             a[2::int(num)] = [x.upper() for x in a[2::int(num)]]
@@ -284,7 +284,7 @@ def Steplow(num):
     caselist = []
 
     for i in locationoffiles:
-        fp = open(i, "r")
+        fp = open(i, mode='r', encoding='utf8', errors='replace')
         for j in fp:
             a = list(j)
             a[2::int(num)] = [x.lower() for x in a[2::int(num)]]
@@ -307,7 +307,7 @@ def Onlyxup(letter):
         letter = str(letter).lower()
 
     for i in locationoffiles:
-        fp = open(i, "r")
+        fp = open(i, mode='r', encoding='utf8', errors='replace')
         for j in fp:
             writefileLR(j.replace(letter, uppercaseletter))
         fp.close()
@@ -327,7 +327,7 @@ def Onlyxlow(letter):
         letter = str(letter).upper()
 
     for i in locationoffiles:
-        fp = open(i, "r")
+        fp = open(i, mode='r', encoding='utf8', errors='replace')
         for j in fp:
             writefileLR(j.replace(letter, lowercaseletter))
         fp.close()
@@ -362,7 +362,7 @@ def insertfront(toinsert):
     insertlist = []
 
     for i in locationoffiles:
-        fp = open(i, "r")
+        fp = open(i, mode='r', encoding='utf8', errors='replace')
         for j in fp:
             writefileLR(toinsert + j)
         fp.close()
@@ -377,7 +377,7 @@ def insertend(toinsert):
     insertlist = []
 
     for i in locationoffiles:
-        fp = open(i, "r")
+        fp = open(i, mode='r', encoding='utf8', errors='replace')
         for j in fp:
             j = j.strip('\n')
             writefileLR(j + toinsert + '\n')
@@ -393,7 +393,7 @@ def insertatX(toinsert, location):
 
 
     for i in locationoffiles:
-        fp = open(i, "r")
+        fp = open(i, mode='r', encoding='utf8', errors='replace')
         for j in fp:
             writefileLR(j[0:int(location)] + toinsert +j[int(location):len(j)])
         fp.close()
@@ -407,7 +407,7 @@ def insertstep(toinsert, step):
     insertlist = []
 
     for i in locationoffiles:
-        fp = open(i, "r")
+        fp = open(i, mode='r', encoding='utf8', errors='replace')
         for j in fp:
             writefileLR(toinsert.join(j[i:i + int(step)] for i in range(0, len(j), int(step))))
         fp.close()
