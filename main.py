@@ -7,20 +7,13 @@ NOTE currently only .txt fortmat has been tested (RTF is known to not work)
 
 from tkinter import *
 from tkinter import filedialog
-import os
 import subprocess, sys
-import re
 import time
-from tkinter.messagebox import showinfo
-from tkinter import ttk
-import math
+
 
 # global variable locationoffiles is simply a easy way to keep track of all files requests to be worked on
 global locationoffiles
 locationoffiles = []
-
-# filesreadin is all the data of each file requests to be worked on
-filesreadin = []
 
 # closed the main gui and thus closes the entire program.
 def quitapp():
@@ -35,7 +28,6 @@ def getUpdateInterval(numLines):
         return int(numLines/ 250)
     else:
         return int(numLines / 10)
-
 
 # updates the progress with what file we're on, what line we're on, and what percentage we are complete
 def updateProgress(fileNum, curLine, numberOfLines):
@@ -53,7 +45,7 @@ def getLineCount(filename):
     f = open(filename,  mode='r', encoding='utf8', errors='replace')
     lines = 0
     buf_size = 1024 * 1024
-    read_f = f.read # loop optimization
+    read_f = f.read
 
     buf = read_f(buf_size)
     while buf:
@@ -90,7 +82,6 @@ def writefile(data):
         return
 
     if locationoffiles:
-
         for i in data:
             f.write(str(i))
 
@@ -100,7 +91,6 @@ def writefile(data):
 # updates the output field aka the location where selected file locations are shown.
 def updateoutput():
     output.insert(END, "COMPLETED TASK RESETTING")
-    filesreadin.clear()
     locationoffiles.clear()
     output.delete('1.0', END)
     progressOP.delete('1.0', END)
@@ -124,11 +114,16 @@ def trimwindow():
     guitrim.title("Configure trim")
     guitrim.geometry('420x100')
     guitrim.resizable(0, 0)
+
+    Label(guitrim, text="string").grid(column=0, row=0, sticky=W)
+    #Label(guitrim, text="step").grid(column=1, row=0, sticky=W)
+
+
     textentrytrim = Entry(guitrim, width=20, bg="grey")
-    textentrytrim.grid(row=0, column=0, sticky=W)
-    Button(guitrim, text="take before", width=7, command=lambda: trim(textentrytrim, before)).grid(row=0, column=1,
+    textentrytrim.grid(row=1, column=0, sticky=W)
+    Button(guitrim, text="take before", width=7, command=lambda: trim(textentrytrim, before)).grid(row=1, column=1,
                                                                                                     sticky=W)
-    Button(guitrim, text="take after", width=7, command=lambda: trim(textentrytrim, after)).grid(row=0, column=2,
+    Button(guitrim, text="take after", width=7, command=lambda: trim(textentrytrim, after)).grid(row=1, column=2,
                                                                                                   sticky=W)
     guitrim.mainloop()
 
@@ -198,28 +193,31 @@ def trim(text, BorA):
 def removalgui():
     guisremoval = Toplevel()
     guisremoval.title("removal (case sensitive)")
-    guisremoval.geometry("420x125")
+    guisremoval.geometry("420x140")
     guisremoval.resizable(0, 0)
 
-    textentryremoval = Entry(guisremoval, width=9, bg="grey")
-    textentryremoval.grid(row=0, column=0, sticky=W)
-    textentryremovalnum = Entry(guisremoval, width=9, bg="grey")
-    textentryremovalnum.grid(row=0, column=1, sticky=W)
+    Label(guisremoval, text="string").grid(column=0, row=0, sticky=W)
+    Label(guisremoval, text="step").grid(column=1, row=0, sticky=W)
 
-    Button(guisremoval, text="Remove all", width=7, command=lambda: removeall(textentryremoval.get())).grid(row=1,
+    textentryremoval = Entry(guisremoval, width=9, bg="grey")
+    textentryremoval.grid(row=1, column=0, sticky=W)
+    textentryremovalnum = Entry(guisremoval, width=9, bg="grey")
+    textentryremovalnum.grid(row=1, column=1, sticky=W)
+
+    Button(guisremoval, text="Remove all", width=7, command=lambda: removeall(textentryremoval.get())).grid(row=2,
                                                                                                             column=0,
                                                                                                             sticky=W)
-    Button(guisremoval, text="First oc", width=7, command=lambda: removefirstoc(textentryremoval.get())).grid(row=2,
+    Button(guisremoval, text="First oc", width=7, command=lambda: removefirstoc(textentryremoval.get())).grid(row=3,
                                                                                                               column=0,
                                                                                                               sticky=W)
-    Button(guisremoval, text="Last oc", width=7, command=lambda: removelastoc(textentryremoval.get())).grid(row=3,
+    Button(guisremoval, text="Last oc", width=7, command=lambda: removelastoc(textentryremoval.get())).grid(row=4,
                                                                                                             column=0,
                                                                                                             sticky=W)
     Button(guisremoval, text="x first oc", width=7,
-           command=lambda: removexfoc(textentryremoval.get(), textentryremovalnum.get())).grid(row=1, column=1,
+           command=lambda: removexfoc(textentryremoval.get(), textentryremovalnum.get())).grid(row=2, column=1,
                                                                                                sticky=W)
     Button(guisremoval, text="x last oc", width=7,
-           command=lambda: removexloc(textentryremoval.get(), textentryremovalnum.get())).grid(row=2, column=1,
+           command=lambda: removexloc(textentryremoval.get(), textentryremovalnum.get())).grid(row=3, column=1,
                                                                                                sticky=W)
 
     guisremoval.mainloop()
@@ -356,23 +354,26 @@ def removexloc(toremove, num):
 def casesgui():
     guicases = Toplevel()
     guicases.title("Case manipulation")
-    guicases.geometry("420x100")
+    guicases.geometry("420x120")
     guicases.resizable(0, 0)
 
-    textentrycases = Entry(guicases, width=9, bg="grey")
-    textentrycases.grid(row=0, column=0, sticky=W)
-    textentrycasesnum = Entry(guicases, width=9, bg="grey")
-    textentrycasesnum.grid(row=0, column=1, sticky=W)
+    Label(guicases, text="string").grid(column=0, row=0, sticky=W)
+    Label(guicases, text="step").grid(column=1, row=0, sticky=W)
 
-    Button(guicases, text="Up all", width=7, command=lambda: Uppercaseall()).grid(row=1, column=0, sticky=W)
-    Button(guicases, text="Low all", width=7, command=lambda: Lowercaseall()).grid(row=2, column=0, sticky=W)
-    Button(guicases, text="Step up", width=7, command=lambda: Stepup(textentrycasesnum.get())).grid(row=1, column=1,
+    textentrycases = Entry(guicases, width=9, bg="grey")
+    textentrycases.grid(row=1, column=0, sticky=W)
+    textentrycasesnum = Entry(guicases, width=9, bg="grey")
+    textentrycasesnum.grid(row=1, column=1, sticky=W)
+
+    Button(guicases, text="Up all", width=7, command=lambda: Uppercaseall()).grid(row=2, column=0, sticky=W)
+    Button(guicases, text="Low all", width=7, command=lambda: Lowercaseall()).grid(row=3, column=0, sticky=W)
+    Button(guicases, text="Step up", width=7, command=lambda: Stepup(textentrycasesnum.get())).grid(row=2, column=1,
                                                                                                     sticky=W)
-    Button(guicases, text="Step low", width=7, command=lambda: Steplow(textentrycasesnum.get())).grid(row=2, column=1,
+    Button(guicases, text="Step low", width=7, command=lambda: Steplow(textentrycasesnum.get())).grid(row=3, column=1,
                                                                                                       sticky=W)
-    Button(guicases, text="Only x up", width=7, command=lambda: Onlyxup(textentrycases.get())).grid(row=1, column=2,
+    Button(guicases, text="Only x up", width=7, command=lambda: Onlyxup(textentrycases.get())).grid(row=2, column=2,
                                                                                                     sticky=W)
-    Button(guicases, text="Only x low", width=7, command=lambda: Onlyxlow(textentrycases.get())).grid(row=2, column=2,
+    Button(guicases, text="Only x low", width=7, command=lambda: Onlyxlow(textentrycases.get())).grid(row=3, column=2,
                                                                                                       sticky=W)
 
 # uppercases all letters in the entire string
@@ -547,22 +548,25 @@ def Onlyxlow(letter):
 def insertgui():
     guiinsert = Toplevel()
     guiinsert.title("Insert")
-    guiinsert.geometry("420x100")
+    guiinsert.geometry("420x120")
     guiinsert.resizable(0, 0)
 
-    textentryinsert = Entry(guiinsert, width=10, bg="grey")
-    textentryinsert.grid(row=0, column=0, sticky=W)
-    textentryinsertnum = Entry(guiinsert, width=10, bg="grey")
-    textentryinsertnum.grid(row=0, column=1, sticky=W)
+    Label(guiinsert, text="to insert").grid(column=0, row=0, sticky=W)
+    Label(guiinsert, text="step/loc").grid(column=1, row=0, sticky=W)
 
-    Button(guiinsert, text="front", width=7, command=lambda: insertfront(textentryinsert.get())).grid(row=1, column=0,
+    textentryinsert = Entry(guiinsert, width=10, bg="grey")
+    textentryinsert.grid(row=1, column=0, sticky=W)
+    textentryinsertnum = Entry(guiinsert, width=10, bg="grey")
+    textentryinsertnum.grid(row=1, column=1, sticky=W)
+
+    Button(guiinsert, text="front", width=7, command=lambda: insertfront(textentryinsert.get())).grid(row=2, column=0,
                                                                                                       sticky=W)
-    Button(guiinsert, text="end", width=7, command=lambda: insertend(textentryinsert.get())).grid(row=2, column=0,
+    Button(guiinsert, text="end", width=7, command=lambda: insertend(textentryinsert.get())).grid(row=3, column=0,
                                                                                                   sticky=W)
     Button(guiinsert, text="insertatX", width=7,
-           command=lambda: insertatX(textentryinsert.get(), textentryinsertnum.get())).grid(row=1, column=1, sticky=W)
+           command=lambda: insertatX(textentryinsert.get(), textentryinsertnum.get())).grid(row=2, column=1, sticky=W)
     Button(guiinsert, text="insertstep", width=7,
-           command=lambda: insertstep(textentryinsert.get(), textentryinsertnum.get())).grid(row=2, column=1, sticky=W)
+           command=lambda: insertstep(textentryinsert.get(), textentryinsertnum.get())).grid(row=3, column=1, sticky=W)
 
 # inserts the character or string given in the front of each line (left to right)
 def insertfront(toinsert):
@@ -672,12 +676,15 @@ def analyzegui():
     guianalyze.title("Analyze")
     guianalyze.geometry("420x100")
 
-    textentryanalyze = Entry(guianalyze, width=10, bg="grey")
-    textentryanalyze.grid(row=0, column=0, sticky=W)
-    textentryanalyzenum = Entry(guianalyze, width=10, bg="grey")
-    textentryanalyzenum.grid(row=0, column=1, sticky=W)
+    Label(guianalyze, text="placehold").grid(column=0, row=0, sticky=W)
+    Label(guianalyze, text="placehold").grid(column=1, row=0, sticky=W)
 
-    Button(guianalyze, text="Frequency", width=7, command=lambda: frequency()).grid(row=1, column=0, sticky=W)
+    textentryanalyze = Entry(guianalyze, width=10, bg="grey")
+    textentryanalyze.grid(row=1, column=0, sticky=W)
+    textentryanalyzenum = Entry(guianalyze, width=10, bg="grey")
+    textentryanalyzenum.grid(row=1, column=1, sticky=W)
+
+    Button(guianalyze, text="Frequency", width=7, command=lambda: frequency()).grid(row=2, column=0, sticky=W)
 
 # lists the frequency of all characters in a file. (such as a = 8 meaning 8 lowercase letter a's are in the entire file)
 def frequency():
