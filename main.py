@@ -5,6 +5,7 @@ Currently works with any python version that support tkinter and supports Linux,
 NOTE currently only .txt fortmat has been tested (RTF is known to not work)
 '''
 
+# TODO do all of the replace functions and continue rewrite of variables and naming to camel case
 from tkinter import *
 from tkinter import filedialog
 import subprocess, sys
@@ -16,7 +17,7 @@ global locationoffiles
 locationoffiles = []
 
 # closed the main gui and thus closes the entire program.
-def quitapp():
+def quitApp():
     gui.destroy()
 
 # determine how often to update (more times for larger work loads)
@@ -26,8 +27,11 @@ def getUpdateInterval(numLines):
 
     if(numLines > 10000000):
         return int(numLines/ 250)
-    else:
+
+    elif(numLines > 100):
         return int(numLines / 10)
+    else:
+        return numLines
 
 # updates the progress with what file we're on, what line we're on, and what percentage we are complete
 def updateProgress(fileNum, curLine, numberOfLines):
@@ -52,31 +56,32 @@ def getLineCount(filename):
         lines += buf.count('\n')
         buf = read_f(buf_size)
 
+    print(lines)
     return lines
 
 # closes all file readins
-def closefilereads():
+def closeFileReads():
     fLR.flush()
     fLR.close()
 
 # gets the desired output location
-def getwritelocation():
+def getWriteLocation():
     global fLR
     fLR = filedialog.asksaveasfile(mode='w', defaultextension=".txt")
 
 # writes the given line to the output file if it doesn't exist it gets it
-def writefileLR(line):
+def writeFileLR(line):
     if "\n" not in line:
         line = line + "\n"
     try:
         fLR.write(line)
     except:
-        getwritelocation()
+        getWriteLocation()
         fLR.write(line)
 
 
 # multiple comments out show differences in development. Now it simply asks the user where to save the file and what name each time a task is done.
-def writefile(data):
+def writeFile(data):
     f = filedialog.asksaveasfile(mode='w', defaultextension=".txt")
     if f is None:
         return
@@ -89,7 +94,7 @@ def writefile(data):
         f.close()
 
 # updates the output field aka the location where selected file locations are shown.
-def updateoutput():
+def updateOutput():
     output.insert(END, "COMPLETED TASK RESETTING")
     locationoffiles.clear()
     output.delete('1.0', END)
@@ -107,7 +112,7 @@ def select():
     output.insert(END, "\n")
 
 # the gui window for all trim tasks
-def trimwindow():
+def trimGui():
     guitrim = Toplevel()
     before = 'before'
     after = 'after'
@@ -119,17 +124,17 @@ def trimwindow():
     #Label(guitrim, text="step").grid(column=1, row=0, sticky=W)
 
 
-    textentrytrim = Entry(guitrim, width=20, bg="grey")
+    textentrytrim = Entry(guitrim, width=7, bg="grey")
     textentrytrim.grid(row=1, column=0, sticky=W)
-    Button(guitrim, text="take before", width=7, command=lambda: trim(textentrytrim, before)).grid(row=1, column=1,
+    Button(guitrim, text="take before", width=7, command=lambda: trim(textentrytrim, before)).grid(row=2, column=0,
                                                                                                     sticky=W)
-    Button(guitrim, text="take after", width=7, command=lambda: trim(textentrytrim, after)).grid(row=1, column=2,
+    Button(guitrim, text="take after", width=7, command=lambda: trim(textentrytrim, after)).grid(row=2, column=1,
                                                                                                   sticky=W)
     guitrim.mainloop()
 
 # trims either before or after the separator excluding separator
 def trim(text, BorA):
-    getwritelocation()
+    getWriteLocation()
     fileCount = 0
     text = text.get()
 
@@ -146,13 +151,13 @@ def trim(text, BorA):
                 for j in fp:
                     try:
                         j = j.split(text)[0]
-                        writefileLR(j)
+                        writeFileLR(j)
                         curLineNum += 1
                         if curLineNum % updateInterval == 0:
                             updateProgress(fileCount, curLineNum, numOfLines)
                             gui.update()
                     except IndexError:
-                        writefileLR(j)
+                        writeFileLR(j)
                         curLineNum += 1
                         if curLineNum % updateInterval == 0:
                             updateProgress(fileCount, curLineNum, numOfLines)
@@ -172,13 +177,13 @@ def trim(text, BorA):
                 for j in fp:
                     try:
                         j = j.split(text, 1)[1]
-                        writefileLR(j)
+                        writeFileLR(j)
                         curLineNum += 1
                         if curLineNum % updateInterval == 0:
                             updateProgress(fileCount, curLineNum, numOfLines)
                             gui.update()
                     except IndexError:
-                        writefileLR(j)
+                        writeFileLR(j)
                         curLineNum += 1
                         if curLineNum % updateInterval == 0:
                             updateProgress(fileCount, curLineNum, numOfLines)
@@ -186,11 +191,11 @@ def trim(text, BorA):
                 fp.close()
 
 
-    closefilereads()
-    updateoutput()
+    closeFileReads()
+    updateOutput()
 
 # Gui for all removal tasks
-def removalgui():
+def removalGui():
     guisremoval = Toplevel()
     guisremoval.title("removal (case sensitive)")
     guisremoval.geometry("420x140")
@@ -204,27 +209,27 @@ def removalgui():
     textentryremovalnum = Entry(guisremoval, width=9, bg="grey")
     textentryremovalnum.grid(row=1, column=1, sticky=W)
 
-    Button(guisremoval, text="Remove all", width=7, command=lambda: removeall(textentryremoval.get())).grid(row=2,
+    Button(guisremoval, text="Remove all", width=7, command=lambda: removeAll(textentryremoval.get())).grid(row=2,
                                                                                                             column=0,
                                                                                                             sticky=W)
-    Button(guisremoval, text="First oc", width=7, command=lambda: removefirstoc(textentryremoval.get())).grid(row=3,
+    Button(guisremoval, text="First oc", width=7, command=lambda: removeFirstOC(textentryremoval.get())).grid(row=3,
                                                                                                               column=0,
                                                                                                               sticky=W)
-    Button(guisremoval, text="Last oc", width=7, command=lambda: removelastoc(textentryremoval.get())).grid(row=4,
+    Button(guisremoval, text="Last oc", width=7, command=lambda: removeLastOC(textentryremoval.get())).grid(row=4,
                                                                                                             column=0,
                                                                                                             sticky=W)
     Button(guisremoval, text="x first oc", width=7,
-           command=lambda: removexfoc(textentryremoval.get(), textentryremovalnum.get())).grid(row=2, column=1,
+           command=lambda: removeXFOC(textentryremoval.get(), textentryremovalnum.get())).grid(row=2, column=1,
                                                                                                sticky=W)
     Button(guisremoval, text="x last oc", width=7,
-           command=lambda: removexloc(textentryremoval.get(), textentryremovalnum.get())).grid(row=3, column=1,
+           command=lambda: removeXLOC(textentryremoval.get(), textentryremovalnum.get())).grid(row=3, column=1,
                                                                                                sticky=W)
 
     guisremoval.mainloop()
 
 # removes all characters or strings from each line. Note removes ALL instances of the requested character or string.//updated for new LR write
-def removeall(toremove):
-    getwritelocation()
+def removeAll(toremove):
+    getWriteLocation()
     fileCount = 0
 
 
@@ -238,19 +243,19 @@ def removeall(toremove):
         fp = open(i, mode='r', encoding='utf8', errors='replace')
         if (numOfLines > 0 and updateInterval > 0):
             for j in fp:
-                writefileLR(j.replace(toremove, ""))
+                writeFileLR(j.replace(toremove, ""))
                 curLineNum += 1
                 if curLineNum % updateInterval == 0:
                     updateProgress(fileCount, curLineNum, numOfLines)
                     gui.update()
             fp.close()
 
-    closefilereads()
-    updateoutput()
+    closeFileReads()
+    updateOutput()
 
 # removes only the first occurence of a character or string (left to right)
-def removefirstoc(toremove):
-    getwritelocation()
+def removeFirstOC(toremove):
+    getWriteLocation()
     fileCount = 0
 
     for i in locationoffiles:
@@ -263,19 +268,19 @@ def removefirstoc(toremove):
         fp = open(i, mode='r', encoding='utf8', errors='replace')
         if (numOfLines > 0 and updateInterval > 0):
             for j in fp:
-                writefileLR(j.replace(toremove, "", 1))
+                writeFileLR(j.replace(toremove, "", 1))
                 curLineNum += 1
                 if curLineNum % updateInterval == 0:
                     updateProgress(fileCount, curLineNum, numOfLines)
                     gui.update()
             fp.close()
 
-    closefilereads()
-    updateoutput()
+    closeFileReads()
+    updateOutput()
 
 # removes only the last occurence of a character or string (right to left)
-def removelastoc(toremove):
-    getwritelocation()
+def removeLastOC(toremove):
+    getWriteLocation()
     fileCount = 0
 
     for i in locationoffiles:
@@ -289,19 +294,19 @@ def removelastoc(toremove):
         if (numOfLines > 0 and updateInterval > 0):
             for j in fp:
                 line = j[::-1].replace(toremove[::-1], "", 1)[::-1]
-                writefileLR(line)
+                writeFileLR(line)
                 curLineNum += 1
                 if curLineNum % updateInterval == 0:
                     updateProgress(fileCount, curLineNum, numOfLines)
                     gui.update()
             fp.close()
 
-    closefilereads()
-    updateoutput()
+    closeFileReads()
+    updateOutput()
 
 # removes x number of instances of characters or strings (left to right)
-def removexfoc(toremove, num):
-    getwritelocation()
+def removeXFOC(toremove, num):
+    getWriteLocation()
     fileCount = 0
 
     for i in locationoffiles:
@@ -314,19 +319,19 @@ def removexfoc(toremove, num):
         fp = open(i, mode='r', encoding='utf8', errors='replace')
         if (numOfLines > 0 and updateInterval > 0):
             for j in fp:
-                writefileLR(j.replace(toremove, "", int(num)))
+                writeFileLR(j.replace(toremove, "", int(num)))
                 curLineNum += 1
                 if curLineNum % updateInterval == 0:
                     updateProgress(fileCount, curLineNum, numOfLines)
                     gui.update()
             fp.close()
 
-    closefilereads()
-    updateoutput()
+    closeFileReads()
+    updateOutput()
 
 # removes x number of instances of characters or strings (right to left)
-def removexloc(toremove, num):
-    getwritelocation()
+def removeXLOC(toremove, num):
+    getWriteLocation()
     fileCount = 0
 
     for i in locationoffiles:
@@ -340,45 +345,45 @@ def removexloc(toremove, num):
         if (numOfLines > 0 and updateInterval > 0):
             for j in fp:
                 line = j[::-1].replace(toremove[::-1], "", int(num))[::-1]
-                writefileLR(line)
+                writeFileLR(line)
                 curLineNum += 1
                 if curLineNum % updateInterval == 0:
                     updateProgress(fileCount, curLineNum, numOfLines)
                     gui.update()
             fp.close()
 
-    closefilereads()
-    updateoutput()
+    closeFileReads()
+    updateOutput()
 
 # gui for all tasks that work with cases (a A)
-def casesgui():
-    guicases = Toplevel()
-    guicases.title("Case manipulation")
-    guicases.geometry("420x120")
-    guicases.resizable(0, 0)
+def casesGui():
+    guiCases = Toplevel()
+    guiCases.title("Case manipulation")
+    guiCases.geometry("420x120")
+    guiCases.resizable(0, 0)
 
-    Label(guicases, text="string").grid(column=0, row=0, sticky=W)
-    Label(guicases, text="step").grid(column=1, row=0, sticky=W)
+    Label(guiCases, text="string").grid(column=0, row=0, sticky=W)
+    Label(guiCases, text="step").grid(column=1, row=0, sticky=W)
 
-    textentrycases = Entry(guicases, width=9, bg="grey")
+    textentrycases = Entry(guiCases, width=9, bg="grey")
     textentrycases.grid(row=1, column=0, sticky=W)
-    textentrycasesnum = Entry(guicases, width=9, bg="grey")
+    textentrycasesnum = Entry(guiCases, width=9, bg="grey")
     textentrycasesnum.grid(row=1, column=1, sticky=W)
 
-    Button(guicases, text="Up all", width=7, command=lambda: Uppercaseall()).grid(row=2, column=0, sticky=W)
-    Button(guicases, text="Low all", width=7, command=lambda: Lowercaseall()).grid(row=3, column=0, sticky=W)
-    Button(guicases, text="Step up", width=7, command=lambda: Stepup(textentrycasesnum.get())).grid(row=2, column=1,
+    Button(guiCases, text="Up all", width=7, command=lambda: upperCaseAll()).grid(row=2, column=0, sticky=W)
+    Button(guiCases, text="Low all", width=7, command=lambda: lowerCaseAlll()).grid(row=3, column=0, sticky=W)
+    Button(guiCases, text="Step up", width=7, command=lambda: stepUp(textentrycasesnum.get())).grid(row=2, column=1,
                                                                                                     sticky=W)
-    Button(guicases, text="Step low", width=7, command=lambda: Steplow(textentrycasesnum.get())).grid(row=3, column=1,
+    Button(guiCases, text="Step low", width=7, command=lambda: stepLow(textentrycasesnum.get())).grid(row=3, column=1,
                                                                                                       sticky=W)
-    Button(guicases, text="Only x up", width=7, command=lambda: Onlyxup(textentrycases.get())).grid(row=2, column=2,
+    Button(guiCases, text="Only x up", width=7, command=lambda: onlyXUp(textentrycases.get())).grid(row=2, column=2,
                                                                                                     sticky=W)
-    Button(guicases, text="Only x low", width=7, command=lambda: Onlyxlow(textentrycases.get())).grid(row=3, column=2,
+    Button(guiCases, text="Only x low", width=7, command=lambda: onlyXLow(textentrycases.get())).grid(row=3, column=2,
                                                                                                       sticky=W)
 
 # uppercases all letters in the entire string
-def Uppercaseall():
-    getwritelocation()
+def upperCaseAll():
+    getWriteLocation()
     fileCount = 0
 
     for i in locationoffiles:
@@ -391,19 +396,19 @@ def Uppercaseall():
         fp = open(i, mode='r', encoding='utf8', errors='replace')
         if (numOfLines > 0 and updateInterval > 0):
             for j in fp:
-                writefileLR(str(j).upper())
+                writeFileLR(str(j).upper())
                 curLineNum += 1
                 if curLineNum % updateInterval == 0:
                     updateProgress(fileCount, curLineNum, numOfLines)
                     gui.update()
             fp.close()
 
-    closefilereads()
-    updateoutput()
+    closeFileReads()
+    updateOutput()
 
 # lowercases all letters in the entire string
-def Lowercaseall():
-    getwritelocation()
+def lowerCaseAlll():
+    getWriteLocation()
     fileCount = 0
 
     for i in locationoffiles:
@@ -416,19 +421,19 @@ def Lowercaseall():
         fp = open(i, mode='r', encoding='utf8', errors='replace')
         if (numOfLines > 0 and updateInterval > 0):
             for j in fp:
-                writefileLR(str(j).lower())
+                writeFileLR(str(j).lower())
                 curLineNum += 1
                 if curLineNum % updateInterval == 0:
                     updateProgress(fileCount, curLineNum, numOfLines)
                     gui.update()
             fp.close()
 
-    closefilereads()
-    updateoutput()
+    closeFileReads()
+    updateOutput()
 
 # uppercases letters following a step such as 1 (aAaAaA)
-def Stepup(num):
-    getwritelocation()
+def stepUp(num):
+    getWriteLocation()
     fileCount = 0
 
     for i in locationoffiles:
@@ -444,19 +449,19 @@ def Stepup(num):
                 a = list(j)
                 a[2::int(num)] = [x.upper() for x in a[2::int(num)]]
                 s = ''.join(a)
-                writefileLR(s)
+                writeFileLR(s)
                 curLineNum += 1
                 if curLineNum % updateInterval == 0:
                     updateProgress(fileCount, curLineNum, numOfLines)
                     gui.update()
             fp.close()
 
-    closefilereads()
-    updateoutput()
+    closeFileReads()
+    updateOutput()
 
 # lowercases letters following a step such as 1(AaAaAa)
-def Steplow(num):
-    getwritelocation()
+def stepLow(num):
+    getWriteLocation()
     fileCount = 0
 
     for i in locationoffiles:
@@ -472,19 +477,19 @@ def Steplow(num):
                 a = list(j)
                 a[2::int(num)] = [x.lower() for x in a[2::int(num)]]
                 s = ''.join(a)
-                writefileLR(s)
+                writeFileLR(s)
                 curLineNum += 1
                 if curLineNum % updateInterval == 0:
                     updateProgress(fileCount, curLineNum, numOfLines)
                     gui.update()
             fp.close()
 
-    closefilereads()
-    updateoutput()
+    closeFileReads()
+    updateOutput()
 
 # uppercaes all instances of a certain letter such as 'a' (Ask the tAll mAn)
-def Onlyxup(letter):
-    getwritelocation()
+def onlyXUp(letter):
+    getWriteLocation()
     fileCount = 0
 
     if str(letter).islower():
@@ -503,19 +508,19 @@ def Onlyxup(letter):
         fp = open(i, mode='r', encoding='utf8', errors='replace')
         if (numOfLines > 0 and updateInterval > 0):
             for j in fp:
-                writefileLR(j.replace(letter, uppercaseletter))
+                writeFileLR(j.replace(letter, uppercaseletter))
                 curLineNum += 1
                 if curLineNum % updateInterval == 0:
                     updateProgress(fileCount, curLineNum, numOfLines)
                     gui.update()
             fp.close()
 
-    closefilereads()
-    updateoutput()
+    closeFileReads()
+    updateOutput()
 
 # lowercasses all instances of a certain letter such as 'a' (aSK THE TaLL MaN)
-def Onlyxlow(letter):
-    getwritelocation()
+def onlyXLow(letter):
+    getWriteLocation()
     fileCount = 0
 
     if str(letter).isupper():
@@ -534,43 +539,43 @@ def Onlyxlow(letter):
         fp = open(i, mode='r', encoding='utf8', errors='replace')
         if (numOfLines > 0 and updateInterval > 0):
             for j in fp:
-                writefileLR(j.replace(letter, lowercaseletter))
+                writeFileLR(j.replace(letter, lowercaseletter))
                 curLineNum += 1
                 if curLineNum % updateInterval == 0:
                     updateProgress(fileCount, curLineNum, numOfLines)
                     gui.update()
             fp.close()
 
-    closefilereads()
-    updateoutput()
+    closeFileReads()
+    updateOutput()
 
 # the gui for all insert tasks
-def insertgui():
-    guiinsert = Toplevel()
-    guiinsert.title("Insert")
-    guiinsert.geometry("420x120")
-    guiinsert.resizable(0, 0)
+def insertGui():
+    guiInsert = Toplevel()
+    guiInsert.title("Insert")
+    guiInsert.geometry("420x120")
+    guiInsert.resizable(0, 0)
 
-    Label(guiinsert, text="to insert").grid(column=0, row=0, sticky=W)
-    Label(guiinsert, text="step/loc").grid(column=1, row=0, sticky=W)
+    Label(guiInsert, text="to insert").grid(column=0, row=0, sticky=W)
+    Label(guiInsert, text="step/loc").grid(column=1, row=0, sticky=W)
 
-    textentryinsert = Entry(guiinsert, width=10, bg="grey")
+    textentryinsert = Entry(guiInsert, width=10, bg="grey")
     textentryinsert.grid(row=1, column=0, sticky=W)
-    textentryinsertnum = Entry(guiinsert, width=10, bg="grey")
+    textentryinsertnum = Entry(guiInsert, width=10, bg="grey")
     textentryinsertnum.grid(row=1, column=1, sticky=W)
 
-    Button(guiinsert, text="front", width=7, command=lambda: insertfront(textentryinsert.get())).grid(row=2, column=0,
+    Button(guiInsert, text="front", width=7, command=lambda: insertFront(textentryinsert.get())).grid(row=2, column=0,
                                                                                                       sticky=W)
-    Button(guiinsert, text="end", width=7, command=lambda: insertend(textentryinsert.get())).grid(row=3, column=0,
+    Button(guiInsert, text="end", width=7, command=lambda: insertEnd(textentryinsert.get())).grid(row=3, column=0,
                                                                                                   sticky=W)
-    Button(guiinsert, text="insertatX", width=7,
-           command=lambda: insertatX(textentryinsert.get(), textentryinsertnum.get())).grid(row=2, column=1, sticky=W)
-    Button(guiinsert, text="insertstep", width=7,
-           command=lambda: insertstep(textentryinsert.get(), textentryinsertnum.get())).grid(row=3, column=1, sticky=W)
+    Button(guiInsert, text="insertAtX", width=7,
+           command=lambda: insertAtX(textentryinsert.get(), textentryinsertnum.get())).grid(row=2, column=1, sticky=W)
+    Button(guiInsert, text="insertStep", width=7,
+           command=lambda: insertStep(textentryinsert.get(), textentryinsertnum.get())).grid(row=3, column=1, sticky=W)
 
 # inserts the character or string given in the front of each line (left to right)
-def insertfront(toinsert):
-    getwritelocation()
+def insertFront(toinsert):
+    getWriteLocation()
     fileCount = 0
 
     for i in locationoffiles:
@@ -583,19 +588,19 @@ def insertfront(toinsert):
         fp = open(i, mode='r', encoding='utf8', errors='replace')
         if (numOfLines > 0 and updateInterval > 0):
             for j in fp:
-                writefileLR(toinsert + j)
+                writeFileLR(toinsert + j)
                 curLineNum += 1
                 if curLineNum % updateInterval == 0:
                     updateProgress(fileCount, curLineNum, numOfLines)
                     gui.update()
             fp.close()
 
-    closefilereads()
-    updateoutput()
+    closeFileReads()
+    updateOutput()
 
 # inserts the character or string given in the back of each line (right to left)
-def insertend(toinsert):
-    getwritelocation()
+def insertEnd(toinsert):
+    getWriteLocation()
     fileCount = 0
 
     for i in locationoffiles:
@@ -609,19 +614,19 @@ def insertend(toinsert):
         if (numOfLines > 0 and updateInterval > 0):
             for j in fp:
                 j = j.strip('\n')
-                writefileLR(j + toinsert + '\n')
+                writeFileLR(j + toinsert + '\n')
                 curLineNum += 1
                 if curLineNum % updateInterval == 0:
                     updateProgress(fileCount, curLineNum, numOfLines)
                     gui.update()
             fp.close()
 
-    closefilereads()
-    updateoutput()
+    closeFileReads()
+    updateOutput()
 
 # inserts a character or string at a certain index of a string. NOTE if the string length is shorter than the string nothing is inserted.
-def insertatX(toinsert, location):
-    getwritelocation()
+def insertAtX(toinsert, location):
+    getWriteLocation()
     fileCount = 0
 
 
@@ -635,19 +640,19 @@ def insertatX(toinsert, location):
         fp = open(i, mode='r', encoding='utf8', errors='replace')
         if (numOfLines > 0 and updateInterval > 0):
             for j in fp:
-                writefileLR(j[0:int(location)] + toinsert +j[int(location):len(j)])
+                writeFileLR(j[0:int(location)] + toinsert +j[int(location):len(j)])
                 curLineNum += 1
                 if curLineNum % updateInterval == 0:
                     updateProgress(fileCount, curLineNum, numOfLines)
                     gui.update()
             fp.close()
 
-    closefilereads()
-    updateoutput()
+    closeFileReads()
+    updateOutput()
 
 # inserts a character or string on a step such as dog ever 2 (I doglodogvedog tdogo dogwadoglk) from (I love to talk)
-def insertstep(toinsert, step):
-    getwritelocation()
+def insertStep(toinsert, step):
+    getWriteLocation()
     fileCount = 0
 
     for i in locationoffiles:
@@ -660,35 +665,35 @@ def insertstep(toinsert, step):
         fp = open(i, mode='r', encoding='utf8', errors='replace')
         if (numOfLines > 0 and updateInterval > 0):
             for j in fp:
-                writefileLR(toinsert.join(j[i:i + int(step)] for i in range(0, len(j), int(step))))
+                writeFileLR(toinsert.join(j[i:i + int(step)] for i in range(0, len(j), int(step))))
                 curLineNum += 1
                 if curLineNum % updateInterval == 0:
                     updateProgress(fileCount, curLineNum, numOfLines)
                     gui.update()
             fp.close()
 
-    closefilereads()
-    updateoutput()
+    closeFileReads()
+    updateOutput()
 
 # the gui for all analyze tasks
-def analyzegui():
-    guianalyze = Toplevel()
-    guianalyze.title("Analyze")
-    guianalyze.geometry("420x100")
+def analyzeGui():
+    guiAnalyze = Toplevel()
+    guiAnalyze.title("Analyze")
+    guiAnalyze.geometry("420x100")
 
-    Label(guianalyze, text="placehold").grid(column=0, row=0, sticky=W)
-    Label(guianalyze, text="placehold").grid(column=1, row=0, sticky=W)
+    Label(guiAnalyze, text="placehold").grid(column=0, row=0, sticky=W)
+    Label(guiAnalyze, text="placehold").grid(column=1, row=0, sticky=W)
 
-    textentryanalyze = Entry(guianalyze, width=10, bg="grey")
+    textentryanalyze = Entry(guiAnalyze, width=10, bg="grey")
     textentryanalyze.grid(row=1, column=0, sticky=W)
-    textentryanalyzenum = Entry(guianalyze, width=10, bg="grey")
+    textentryanalyzenum = Entry(guiAnalyze, width=10, bg="grey")
     textentryanalyzenum.grid(row=1, column=1, sticky=W)
 
-    Button(guianalyze, text="Frequency", width=7, command=lambda: frequency()).grid(row=2, column=0, sticky=W)
+    Button(guiAnalyze, text="Frequency", width=7, command=lambda: frequency()).grid(row=2, column=0, sticky=W)
 
 # lists the frequency of all characters in a file. (such as a = 8 meaning 8 lowercase letter a's are in the entire file)
 def frequency():
-    getwritelocation()
+    getWriteLocation()
     charList = [ '!' ,'"' ,'#' ,'$' ,'%' ,'&' ,'\'' ,'(' ,')' ,'*' ,'+' ,',' ,'-' ,'.' ,'/' ,'0' ,'1' ,'2' ,'3' ,'4' ,'5' ,'6' ,'7' ,'8' ,'9' ,':' ,';' ,'<' ,'=' ,'>' ,'?' ,'@' ,'A' ,'B' ,'C' ,'D' ,'E' ,'F' ,'G' ,'H' ,'I' ,'J' ,'K' ,'L' ,'M' ,'N' ,'O' ,'P' ,'Q' ,'R' ,'S' ,'T' ,'U' ,'V' ,'W' ,'X' ,'Y' ,'Z' ,'[' ,'\\' ,']' ,'^' ,'_' ,'`' ,'a' ,'b' ,'c' ,'d' ,'e' ,'f' ,'g' ,'h' ,'i' ,'j' ,'k' ,'l' ,'m' ,'n' ,'o' ,'p' ,'q' ,'r' ,'s' ,'t' ,'u' ,'v' ,'w' ,'x' ,'y' ,'z' ,'{' ,'|' ,'}' ,'~', '\n' ]
     charNumList = [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ]
     fileCount = 0
@@ -719,18 +724,93 @@ def frequency():
             fp.close()
 
     for i in range(len(charList) - 1):
-        writefileLR(charList[i] + " = " + str(charNumList[i]))
+        writeFileLR(charList[i] + " = " + str(charNumList[i]))
 
-    closefilereads()
-    updateoutput()
+    closeFileReads()
+    updateOutput()
 
 # the help button triggers the systems text editor to open the help.txt which contains the manual
 def help(): #needs windows (operating system) support
-    filename = "help.txt"
+    fileName = "help.txt"
     opener = "open" if sys.platform == "darwin" else "xdg-open"
-    subprocess.call([opener, filename])
+    subprocess.call([opener, fileName])
 
+'''
+# gui for replace
+def replaceGui():
+    guiReplace = Toplevel()
+    guiReplace.title("Replace")
+    guiReplace.geometry("420x120")
+    guiReplace.resizable(0, 0)
 
+    Label(guiReplace, text="find").grid(column=0, row=0, sticky=W)
+    Label(guiReplace, text="replace").grid(column=1, row=0, sticky=W)
+
+    textEntryFind = Entry(guiReplace, width=10, bg="grey")
+    textEntryFind.grid(row=1, column=0, sticky=W)
+    textEntryReplace = Entry(guiReplace, width=10, bg="grey")
+    textEntryReplace.grid(row=1, column=1, sticky=W)
+
+    Button(guiReplace, text="Replace", width=7, command=lambda: replaceAll(textEntryFind.get(), textEntryReplace.get())).grid(row=2, column=0, sticky=W)
+    #Button(guiReplace, text="ReplaceOL", width=7, command=lambda: replaceOL(textEntryFind.get(), textEntryReplace.get())).grid(row=2, column=0, sticky=W)
+
+# Replace all occurances of a string with a given string
+def replaceAll(find, replace):
+    getWriteLocation()
+    fileCount = 0
+    print("here")
+
+    for i in locationoffiles:
+        print("here1")
+        progressReadLines()
+        gui.update()
+        numOfLines = getLineCount(i)
+        updateInterval = getUpdateInterval(numOfLines)
+        curLineNum = 0
+        fileCount += 1
+        fp = open(i, mode='r', encoding='utf8', errors='replace')
+        if (numOfLines > 0 and updateInterval > 0):
+            print("here2")
+            for j in fp:
+                print(j)
+                writeFileLR(j.replace(find, replace))
+                curLineNum += 1
+                if curLineNum % updateInterval == 0:
+                    updateProgress(fileCount, curLineNum, numOfLines)
+                    gui.update()
+            fp.close()
+
+    closeFileReads()
+    updateOutput()
+
+def replaceAll(find, replace):
+    getWriteLocation()
+    fileCount = 0
+    print("here")
+
+    for i in locationoffiles:
+        print("here1")
+        progressReadLines()
+        gui.update()
+        numOfLines = getLineCount(i)
+        updateInterval = getUpdateInterval(numOfLines)
+        curLineNum = 0
+        fileCount += 1
+        fp = open(i, mode='r', encoding='utf8', errors='replace')
+        if (numOfLines > 0 and updateInterval > 0):
+            print("here2")
+            for j in fp:
+                print(j)
+                writeFileLR(j.replace(find, replace))
+                curLineNum += 1
+                if curLineNum % updateInterval == 0:
+                    updateProgress(fileCount, curLineNum, numOfLines)
+                    gui.update()
+            fp.close()
+
+    closeFileReads()
+    updateOutput()
+'''
 # the main gui window
 gui = Tk(className="String modulator 5000")
 
@@ -749,35 +829,36 @@ gui.resizable(0, 0) #Make a scaler option (such as simply doubling the gui.geome
 Button(gui, text="Select", width=7, command=select).grid(row=1, column=0, sticky=W)
 
 output = Text(gui, width=84, height=6, wrap=WORD, background="grey")
-output.grid(row=0, column=1, columnspan=2, sticky=W)
+output.grid(row=0, column=1, columnspan=16, sticky=W)
 
 # button for trimming
-Button(gui, text="Trim", width=7, command=trimwindow).grid(row=2, column=0, sticky=W)
+Button(gui, text="Trim", width=7, command=trimGui).grid(row=2, column=0, sticky=W)
 
 # button for removal
-Button(gui, text="Removal", width=7, command=removalgui).grid(row=3, column=0, sticky=W)
+Button(gui, text="Removal", width=7, command=removalGui).grid(row=3, column=0, sticky=W)
 
 # button for changing cases
-Button(gui, text="Cases", width=7, command=casesgui).grid(row=1, column=1, sticky=W)
+Button(gui, text="Cases", width=7, command=casesGui).grid(row=1, column=1, sticky=W)
 
 # button for inserting
 
-Button(gui, text="Insert", width=7, command=insertgui).grid(row=2, column=1, sticky=W)
+Button(gui, text="Insert", width=7, command=insertGui).grid(row=2, column=1, sticky=W)
 
 # button to quit the appilcation and all other windows
-Button(gui, text="Quit", width=7, command=quitapp).grid(row=4, column=0, sticky=W)
+Button(gui, text="Quit", width=7, command=quitApp).grid(row=4, column=0, sticky=W)
 
 # button for the analyzation of files
-Button(gui, text="Analyze", width=7, command=analyzegui).grid(row=3, column=1, sticky=W)
+Button(gui, text="Analyze", width=7, command=analyzeGui).grid(row=3, column=1, sticky=W)
+
+# button for replacing a string with a different string
+#Button(gui, text="Replace", width=7, command=replaceGui).grid(row=1, column=2, sticky=W)
 
 # button for help
 Button(gui, text="Help", width=7, command=help).grid(row=4, column=1, sticky=W)
 
-#Button(gui, text="test", width=7, command=tester).grid(row=1, column=2, sticky=W)
-
 # progress output
 progressOP = Text(gui, width=30)
-progressOP.grid(row=5, column=1, sticky=W)
+progressOP.grid(row=5, column=16, sticky=W)
 progressOP.insert(END, "progress")
 
 
