@@ -56,7 +56,6 @@ def getLineCount(filename):
         lines += buf.count('\n')
         buf = read_f(buf_size)
 
-    print(lines)
     return lines
 
 # closes all file readins
@@ -203,11 +202,14 @@ def removalGui():
 
     Label(guisremoval, text="string").grid(column=0, row=0, sticky=W)
     Label(guisremoval, text="step").grid(column=1, row=0, sticky=W)
+    Label(guisremoval, text="length").grid(column=2, row=0, sticky=W)
 
     textentryremoval = Entry(guisremoval, width=9, bg="grey")
     textentryremoval.grid(row=1, column=0, sticky=W)
     textentryremovalnum = Entry(guisremoval, width=9, bg="grey")
     textentryremovalnum.grid(row=1, column=1, sticky=W)
+    textentryremovallength = Entry(guisremoval, width=9, bg="grey")
+    textentryremovallength.grid(row=1, column=2, sticky=W)
 
     Button(guisremoval, text="Remove all", width=7, command=lambda: removeAll(textentryremoval.get())).grid(row=2,
                                                                                                             column=0,
@@ -224,7 +226,13 @@ def removalGui():
     Button(guisremoval, text="x last oc", width=7,
            command=lambda: removeXLOC(textentryremoval.get(), textentryremovalnum.get())).grid(row=3, column=1,
                                                                                                sticky=W)
-
+                                                                                               
+    Button(guisremoval, text="Length < x", width=7,
+           command=lambda: removeLengthLessThan(textentryremovallength.get())).grid(row=2, column=2,
+                                                                                               sticky=W)
+    Button(guisremoval, text="Length > x", width=7,
+           command=lambda: removeLengthGreaterThan(textentryremovallength.get())).grid(row=3, column=2,
+                                                                                               sticky=W)
     guisremoval.mainloop()
 
 # removes all characters or strings from each line. Note removes ALL instances of the requested character or string.//updated for new LR write
@@ -354,6 +362,57 @@ def removeXLOC(toremove, num):
 
     closeFileReads()
     updateOutput()
+     
+def removeLengthLessThan(length):
+    getWriteLocation()
+    fileCount = 0
+
+    for i in locationoffiles:
+        progressReadLines()
+        gui.update()
+        numOfLines = getLineCount(i)
+        updateInterval = getUpdateInterval(numOfLines)
+        curLineNum = 0
+        fileCount += 1
+        fp = open(i, mode='r', encoding='utf8', errors='replace')
+        if (numOfLines > 0 and updateInterval > 0):
+            for j in fp:
+                if len(j) > int(length):
+                    writeFileLR(j)
+                curLineNum += 1
+                if curLineNum % updateInterval == 0:
+                    updateProgress(fileCount, curLineNum, numOfLines)
+                    gui.update()
+            fp.close()
+
+    closeFileReads()
+    updateOutput()
+
+def removeLengthGreaterThan(length):
+    getWriteLocation()
+    fileCount = 0
+
+    for i in locationoffiles:
+        progressReadLines()
+        gui.update()
+        numOfLines = getLineCount(i)
+        updateInterval = getUpdateInterval(numOfLines)
+        curLineNum = 0
+        fileCount += 1
+        fp = open(i, mode='r', encoding='utf8', errors='replace')
+        if (numOfLines > 0 and updateInterval > 0):
+            for j in fp:
+                if len(j) < int(length) + 1:
+                    writeFileLR(j)
+                curLineNum += 1
+                if curLineNum % updateInterval == 0:
+                    updateProgress(fileCount, curLineNum, numOfLines)
+                    gui.update()
+            fp.close()
+
+    closeFileReads()
+    updateOutput()
+
 
 # gui for all tasks that work with cases (a A)
 def casesGui():
