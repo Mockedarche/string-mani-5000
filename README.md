@@ -49,3 +49,6 @@ Analyze: Currently under heavy development! Both boxes don't do anything are pla
 Frequency: Reads every character in a file and then outputs a new file with a count of each character. Supported characters are currently all letters, digits, and common symbols such as (separated by commas) @,!,#,$,%,^,&,*,(,),_,-,=,+,{,[,],},\,|,;,:,',",<,>,.,?,/, and of course the ,
 
 Quit: Quits the entire program.
+
+GIF
+![](https://github.com/Mockedarche/string-mani-5000/blob/main/example.gif)
