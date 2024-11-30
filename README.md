@@ -1,3 +1,5 @@
+# NOTE CURRENTLY NOT IN DEVELOPMENT AS A REWRITE IS UNDERPLACE TO A NOT DEPRECATED GUI FRAMEWORK. 
+
 # string-mani-5000
 A simple tkinter gui for manipulating large sets of single line strings (in various file formats)
 
