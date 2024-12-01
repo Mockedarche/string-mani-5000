@@ -1,4 +1,6 @@
-# NOTE CURRENTLY NOT IN DEVELOPMENT AS A REWRITE IS UNDERPLACE TO A NOT DEPRECATED GUI FRAMEWORK. 
+# NOTE CURRENTLY NOT IN DEVELOPMENT AS A REWRITE TO A CLI IS UDNERGOING
+
+String-mani-5000 uses tkinter and tkinter was a great choice at the time but tkinter is slowly becomign deprecated and i've found various pythons tkinter behavior is different resulting in a rather bad user experience. Additionally atleast on macOS tkinter isn't coming included with the default python installation in a lot of sources thus the GUI to run whereever python is well isn't a realistic expectation anymore. Moving to CLI is currently underway with the goal to essentially replicate unified list manager (a great piece of software seemingly not being developed anymore) for once again all platforms that python is supported. A CLI will hurt the user experience but will remove any frameworks from causing another rewrite. Thanks for reading development on the CLI version is udnerway and when it reaches feature parity will be pushed to THIS github. 
 
 # string-mani-5000
 A simple tkinter gui for manipulating large sets of single line strings (in various file formats)
