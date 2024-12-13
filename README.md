@@ -8,14 +8,9 @@ String-mani-5000 uses tkinter and tkinter was a great choice at the time but tki
 # string-mani-5000
 A simple tkinter gui for manipulating large sets of single line strings (in various file formats)
 
-Hello I am mockedarche the creator of this simple program. The goal of this program is to replace a different piece of software that I used to use. This other program had far more features but the ones I commonly used are added to this. 
-
-NOTE: This is still very very early in the days of this program but I don't know how much more will be added. If this gets decent traction ill probably keep working on it as its been a great learning experience. I know Java and a smidge of c but after taking a year leave from college decided to teach myself python. I don't have any formal training in python and currently learned almost everything I know within a week of real learning. Meaning this program will be rough and have plenty of bugs. Bugs will be worked on and fixed just as new features (or potential rewrites of old ones). FEEL FREE TO REACH OUT IF YOU HAVE ANY TROUBLE OR NEED/WANT A NEW OR DIFFERENT FEATURES!
+The goal of this program is to replace a different piece of software that I used to use. This other program had far more features but the ones I commonly used are added to this. 
 
 Why the cat/catcoon picture? Needed some kind of moniker. It adds a charm and don't plan to remove it unless it causes more hassle than its worth. 
-
-HELP!!!!!
-Now into the meat and potatoes
 
 SELECT: Clicking this button should bring up a dialog box that allows you to select a file you want.  You can add as many files as you want. The giant box in the top center to right top shows all files selected. You can add more than what it can show (if some disappear they are still in queue just the box isn't big enough).
 
